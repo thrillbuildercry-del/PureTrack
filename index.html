@@ -91,7 +91,7 @@
             border-radius: 9999px;
             padding: 8px;
             display: flex;
-            justify-content: center; /* Centered for dynamic item counts */
+            justify-content: center; 
             gap: 12px;
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
@@ -214,9 +214,18 @@
                 <div id="auth-view-pending" class="space-y-4 hidden text-center py-4">
                     <div class="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
                     <h3 class="font-bold text-gray-800 dark:text-white text-lg">Waiting for Approval</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Your access request has been sent. Please ask the Admin to accept your request in the Teams tab.</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Your access request has been securely synced to the cloud. The Admin will review your role shortly.</p>
                     <p class="text-[10px] text-gray-400 mt-4 uppercase tracking-widest" id="pending-identity-label"></p>
                     <button onclick="cancelPendingRequest()" class="mt-4 text-xs text-red-500 underline">Cancel Request & Go Back</button>
+                </div>
+                
+                <div id="auth-view-declined" class="space-y-4 hidden text-center py-4">
+                    <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="x-circle" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 dark:text-white text-lg">Access Declined</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">The administrator has declined your request to access this team.</p>
+                    <button onclick="cancelPendingRequest()" class="mt-4 text-sm font-bold text-gray-600 underline">Return to Login</button>
                 </div>
 
             </div>
@@ -258,14 +267,6 @@
                             </div>
                         </div>
                         <button onclick="logoutSession()" class="text-xs bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded font-bold hover:bg-indigo-200 transition">Logout</button>
-                    </div>
-                    
-                    <!-- Cloud Account Indicator -->
-                    <div class="mb-4 flex justify-center">
-                        <div class="inline-flex items-center bg-gray-200 dark:bg-gray-800 px-2.5 py-1 rounded-full text-[10px] text-gray-600 dark:text-gray-400 shadow-inner">
-                            <i data-lucide="shield-check" class="w-3 h-3 mr-1 text-green-500"></i>
-                            UID: <span class="font-mono ml-1 select-all" id="home-cloud-user-id">Connecting...</span>
-                        </div>
                     </div>
                     
                     <!-- Dynamic Inventory Summary Card -->
@@ -539,16 +540,6 @@
 
                 <!-- TAB 4: SETTINGS (Admin Only) -->
                 <div id="tab-settings" class="tab-content">
-
-                    <!-- Cloud Info Card -->
-                    <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl shadow-sm p-4 mb-4 border border-indigo-100 dark:border-indigo-800 transition-colors">
-                        <h2 class="font-semibold text-indigo-800 dark:text-indigo-300 mb-2 flex items-center">
-                            <i data-lucide="cloud" class="w-5 h-5 mr-2"></i> Cloud Account
-                        </h2>
-                        <p class="text-[10px] text-indigo-600 dark:text-indigo-400 mb-1 uppercase tracking-wide font-bold">Authenticated User ID</p>
-                        <p class="text-sm font-mono text-gray-800 dark:text-gray-200 break-all bg-white dark:bg-gray-800 p-2 rounded border border-indigo-100 dark:border-indigo-800 select-all" id="settings-cloud-user-id">Not Logged In</p>
-                    </div>
-                    
                     <!-- Catalog Management -->
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors">
                         <h2 class="font-semibold text-gray-600 dark:text-gray-300 mb-4 flex items-center">
@@ -609,6 +600,46 @@
                     </div>
                 </div>
 
+                <!-- TAB 5: OVERSIGHT (Oversight Role Only) -->
+                <div id="tab-oversight" class="tab-content">
+                    
+                    <div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg p-3 mb-4 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="bg-indigo-500 text-white p-1.5 rounded-full mr-2">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-indigo-500 dark:text-indigo-400 tracking-wider">Logged In As</p>
+                                <p class="font-bold text-gray-800 dark:text-gray-200 text-sm leading-none" id="display-oversight-user">Loading...</p>
+                            </div>
+                        </div>
+                        <button onclick="logoutSession()" class="text-xs bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded font-bold hover:bg-indigo-200 transition">Logout</button>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 mb-4 border border-gray-100 dark:border-gray-700">
+                        <h2 class="font-black text-gray-800 dark:text-gray-100 mb-4 flex items-center">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5 mr-2 text-indigo-500"></i> High-Level Oversight
+                        </h2>
+                        
+                        <!-- Financial Summary -->
+                        <div class="mb-6">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-gray-700 pb-2 mb-3">Global Financials</h3>
+                            <div id="oversight-financials" class="space-y-1">
+                                <!-- JS Injected -->
+                            </div>
+                        </div>
+
+                        <!-- Product Summary -->
+                        <div>
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-gray-700 pb-2 mb-3">Remaining Product</h3>
+                            <div id="oversight-inventory-list" class="space-y-2">
+                                <!-- JS Injected -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </main>
 
             <!-- Floating Dynamic Dock Navigation -->
@@ -636,6 +667,12 @@
                         <i data-lucide="settings" class="w-[22px] h-[22px]"></i>
                     </div>
                     <span class="nav-text">Settings</span>
+                </button>
+                <button onclick="switchTab('oversight')" id="nav-oversight" class="nav-item" style="display:none;">
+                    <div class="nav-icon-container">
+                        <i data-lucide="eye" class="w-[22px] h-[22px]"></i>
+                    </div>
+                    <span class="nav-text">Oversight</span>
                 </button>
             </nav>
             
@@ -757,7 +794,7 @@
     <script>
         lucide.createIcons();
 
-        // State Management
+        // Data Model unified for Firebase specific section
         let appData = {
             inventory: {}, 
             currentTransactions: [],
@@ -772,8 +809,10 @@
                 weights: ['1g', '2g', '3.5g', '7g'],
                 pricing: {} 
             },
-            team: [{ id: 'u1', name: 'Admin/Owner', role: 'admin' }],
-            pendingUsers: [],
+            // Unified users structure maps explicit role and status
+            users: [
+                { id: 'u1', name: 'Admin/Owner', role: 'admin', status: 'active' }
+            ],
             adminPin: '1234'
         };
 
@@ -839,7 +878,9 @@
             const { getFirestore, doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
             db = getFirestore();
             
-            const docRef = doc(db, 'artifacts', appId, 'users', cloudUser.uid, 'salesTracker', 'mainData');
+            // Shared PUBLIC path so Admin and Users share the exact same state (req for Teams/Approvals)
+            // Ensure even segment count for documents: collection -> document -> collection -> document -> collection -> document
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'appState', 'trackerMain');
             
             onSnapshot(docRef, (snapshot) => {
                 if (snapshot.exists()) {
@@ -848,28 +889,35 @@
                     const remoteData = snapshot.data();
                     appData = { ...appData, ...remoteData };
 
-                    // Enforce safe defaults against empty remote objects and migrations
+                    // Enforce safe defaults & perform structural migrations
                     if (!appData.inventory) appData.inventory = {};
                     if (!appData.currentTransactions) appData.currentTransactions = [];
                     if (!appData.history) appData.history = [];
                     if (!appData.customDebts) appData.customDebts = [];
                     if (!appData.supplierPayments) appData.supplierPayments = [];
-                    if (!appData.pendingUsers) appData.pendingUsers = [];
-                    if (!appData.team || appData.team.length === 0) appData.team = [{ id: 'u1', name: 'Admin/Owner', role: 'admin' }];
-                    
-                    // Legacy migration for team roles
-                    appData.team.forEach(u => {
-                        if(u.id === 'u1') u.role = 'admin';
-                        else u.role = u.role || 'user';
-                    });
-
-                    if (!appData.settings || !appData.settings.types || !appData.settings.weights) {
+                    if (!appData.settings || !appData.settings.types) {
                         appData.settings = { types: ['Soft', 'Hard', 'Down', 'Side'], weights: ['1g', '2g', '3.5g', '7g'], pricing: {} };
                     }
-                    
-                    checkAuth(); // Real-time UI refresh based on permission status
+
+                    // Migration block: converting old `team`/`pendingUsers` layout to unified `users` database table
+                    if (!appData.users || appData.users.length === 0) {
+                        appData.users = [];
+                        if (appData.team && appData.team.length > 0) {
+                            appData.team.forEach(u => appData.users.push({ id: u.id, name: u.name, role: u.id === 'u1' ? 'admin' : 'user', status: 'active' }));
+                            delete appData.team;
+                        } else {
+                            appData.users.push({ id: 'u1', name: 'Admin/Owner', role: 'admin', status: 'active' });
+                        }
+                        if (appData.pendingUsers && appData.pendingUsers.length > 0) {
+                            appData.pendingUsers.forEach(u => appData.users.push({ id: u.id, name: u.name, role: 'user', status: 'pending' }));
+                            delete appData.pendingUsers;
+                        }
+                        syncDataToCloud(); // Save the migrated format
+                    }
+
+                    checkAuth(); 
                 } else {
-                    syncDataToCloud();
+                    syncDataToCloud(); // init doc
                 }
             }, (error) => {
                 console.error("Firestore sync error:", error);
@@ -889,7 +937,7 @@
 
             try {
                 const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
-                const docRef = doc(db, 'artifacts', appId, 'users', cloudUser.uid, 'salesTracker', 'mainData');
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'appState', 'trackerMain');
                 await setDoc(docRef, appData);
             } catch (err) {
                 console.error("Cloud push failed:", err);
@@ -907,43 +955,59 @@
             const authScreen = document.getElementById('auth-screen');
             const appWrapper = document.getElementById('app-wrapper');
             
-            const userInTeam = (appData.team || []).find(u => u.id === currentSessionUser);
-            const userInPending = (appData.pendingUsers || []).find(u => u.id === currentSessionUser);
+            const currentUserObj = (appData.users || []).find(u => u.id === currentSessionUser);
 
-            if (userInTeam) {
+            if (currentUserObj && currentUserObj.status === 'active') {
                 // Authorized Access
                 authScreen.classList.add('hidden');
                 appWrapper.classList.remove('hidden');
                 appWrapper.classList.add('flex');
                 
                 appData.activeUserId = currentSessionUser; 
+                const role = currentUserObj.role;
 
-                // Hide/Show Admin tabs
-                const isAdmin = userInTeam.role === 'admin';
+                // View Toggles based on specific Roles
+                const isAdmin = role === 'admin';
+                const isOversight = role === 'oversight';
+
                 const teamsNav = document.getElementById('nav-teams');
                 const settingsNav = document.getElementById('nav-settings');
+                const salesNav = document.getElementById('nav-sales');
+                const reportsNav = document.getElementById('nav-reports');
+                const oversightNav = document.getElementById('nav-oversight');
+
                 if(teamsNav) teamsNav.style.display = isAdmin ? 'flex' : 'none';
                 if(settingsNav) settingsNav.style.display = isAdmin ? 'flex' : 'none';
                 
-                // If they are on a hidden tab, redirect to sales
+                if(salesNav) salesNav.style.display = isOversight ? 'none' : 'flex';
+                if(reportsNav) reportsNav.style.display = isOversight ? 'none' : 'flex';
+                if(oversightNav) oversightNav.style.display = isOversight ? 'flex' : 'none';
+                
                 const activeTabEl = document.querySelector('.tab-content.active');
-                if (!isAdmin && activeTabEl && (activeTabEl.id === 'tab-teams' || activeTabEl.id === 'tab-settings')) {
-                    switchTab('sales');
+
+                // Route users out of restricted areas
+                if (isOversight) {
+                    if (activeTabEl && activeTabEl.id !== 'tab-oversight') switchTab('oversight');
+                } else if (!isAdmin) {
+                    if (activeTabEl && (activeTabEl.id === 'tab-teams' || activeTabEl.id === 'tab-settings' || activeTabEl.id === 'tab-oversight')) {
+                        switchTab('sales');
+                    }
                 }
 
                 updateUI();
-                renderSettingsTab();
-                renderTeamTab();
-            } else if (userInPending) {
-                // Requested, waiting for approval
+            } else if (currentUserObj && currentUserObj.status === 'pending') {
                 authScreen.classList.remove('hidden');
                 appWrapper.classList.add('hidden');
                 appWrapper.classList.remove('flex');
                 showAuthView('pending');
                 const lbl = document.getElementById('pending-identity-label');
-                if(lbl) lbl.innerText = `Requesting as: ${userInPending.name}`;
+                if(lbl) lbl.innerText = `Requesting as: ${currentUserObj.name}`;
+            } else if (currentUserObj && currentUserObj.status === 'declined') {
+                authScreen.classList.remove('hidden');
+                appWrapper.classList.add('hidden');
+                appWrapper.classList.remove('flex');
+                showAuthView('declined');
             } else {
-                // Logged out / Unknown
                 authScreen.classList.remove('hidden');
                 appWrapper.classList.add('hidden');
                 appWrapper.classList.remove('flex');
@@ -953,7 +1017,7 @@
         }
 
         function showAuthView(viewName) {
-            ['login', 'request', 'pending'].forEach(v => {
+            ['login', 'request', 'pending', 'declined'].forEach(v => {
                 const el = document.getElementById(`auth-view-${v}`);
                 if(el) {
                     if (v === viewName) el.classList.remove('hidden');
@@ -966,18 +1030,22 @@
             const list = document.getElementById('auth-user-list');
             if(!list) return;
 
-            list.innerHTML = (appData.team || []).map(u => `
+            const activeUsers = (appData.users || []).filter(u => u.status === 'active');
+
+            list.innerHTML = activeUsers.map(u => `
                 <button onclick="loginAs('${u.id}', '${u.role}')" class="w-full flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 hover:bg-blue-50 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-xl transition active:scale-95 text-left">
                     <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 mr-3 font-bold">
                         ${u.name.charAt(0).toUpperCase()}
                     </div>
                     <div class="flex-1">
                         <div class="font-bold text-gray-800 dark:text-gray-200">${u.name}</div>
-                        <div class="text-[10px] uppercase tracking-widest text-gray-400">${u.role === 'admin' ? 'Administrator' : 'Employee'}</div>
+                        <div class="text-[10px] uppercase tracking-widest text-gray-400">${u.role === 'admin' ? 'Administrator' : u.role === 'oversight' ? 'Oversight' : 'Employee'}</div>
                     </div>
                     <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
                 </button>
             `).join('');
+            
+            if (activeUsers.length === 0) list.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">No active users found.</p>';
             lucide.createIcons();
         }
 
@@ -1007,8 +1075,9 @@
             if(!name) return;
 
             const newId = 'req_' + Date.now();
-            if(!appData.pendingUsers) appData.pendingUsers = [];
-            appData.pendingUsers.push({ id: newId, name: name });
+            if(!appData.users) appData.users = [];
+            // Role defaults to user. Status explicitly pending
+            appData.users.push({ id: newId, name: name, role: 'user', status: 'pending' });
             
             currentSessionUser = newId;
             localStorage.setItem('localSessionUser', newId);
@@ -1018,8 +1087,9 @@
         }
 
         function cancelPendingRequest() {
-            if(!appData.pendingUsers) appData.pendingUsers = [];
-            appData.pendingUsers = appData.pendingUsers.filter(u => u.id !== currentSessionUser);
+            if(!appData.users) return;
+            // Purge them from the list
+            appData.users = appData.users.filter(u => u.id !== currentSessionUser);
             
             currentSessionUser = null;
             localStorage.removeItem('localSessionUser');
@@ -1046,23 +1116,19 @@
             const headerDate = document.getElementById('current-date-header');
             if(headerDate) headerDate.innerText = new Date().toLocaleDateString('en-US', options);
 
-            // Execute auth logic to branch UI
             checkAuth();
-            
             wizardSetStep(1); 
             initFirebase();
         }
 
         function saveData() {
-            // Internal UI sync handled via setupCloudSync onSnapshot response usually, 
-            // but we call updateUI here for local instant feel
             if (document.getElementById('app-wrapper').classList.contains('flex')) {
                 updateUI();
             }
             syncDataToCloud();
         }
 
-        // ... [Remaining utility functions updateUI, getTodayTotals, renderWizard... exactly as before] ...
+        // --- CORE UI RENDERING ---
 
         function getTodayTotals() {
             return (appData.currentTransactions || []).reduce((acc, t) => {
@@ -1099,10 +1165,11 @@
             const potProfitEl = document.getElementById('display-potential-profit');
             if(potProfitEl) potProfitEl.innerText = `$${potentialProfit.toLocaleString()}`;
             
-            const safeTeam = appData.team || [{ id: 'u1', name: 'Admin/Owner', role: 'admin' }];
-            const activeUser = safeTeam.find(u => u.id === appData.activeUserId);
-            const activeUserEl = document.getElementById('display-active-user');
-            if(activeUserEl) activeUserEl.innerText = activeUser ? activeUser.name : "Unknown User";
+            const activeUser = (appData.users || []).find(u => u.id === appData.activeUserId);
+            const activeUserEls = [document.getElementById('display-active-user'), document.getElementById('display-oversight-user')];
+            activeUserEls.forEach(el => {
+                if(el) el.innerText = activeUser ? activeUser.name : "Unknown User";
+            });
             
             const grossEl = document.getElementById('today-gross');
             if(grossEl) grossEl.innerText = `$${totals.gross.toLocaleString()}`;
@@ -1119,6 +1186,10 @@
             renderHistoryList();
             calculateReconciliation();
             renderTeamStats();
+            
+            renderSettingsTab();
+            renderTeamTab();
+            renderOversightTab();
             
             const invModal = document.getElementById('inventory-modal');
             if (invModal && !invModal.classList.contains('hidden')) {
@@ -1217,7 +1288,6 @@
             const targetStep = document.getElementById(`wizard-step-${step}`);
             if(targetStep) targetStep.classList.add('active');
             
-            // Progress Bar
             const percent = step === 1 ? '33.33%' : step === 2 ? '66.66%' : '100%';
             const progressEl = document.getElementById('wizard-progress');
             if(progressEl) progressEl.style.width = percent;
@@ -1305,8 +1375,7 @@
             const now = new Date();
             const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
             
-            const safeTeam = appData.team || [];
-            const activeUser = safeTeam.find(u => u.id === appData.activeUserId);
+            const activeUser = (appData.users || []).find(u => u.id === appData.activeUserId);
 
             const transaction = {
                 id: Date.now(),
@@ -1558,8 +1627,14 @@
             // Render Active Roster
             const roster = document.getElementById('team-roster-list');
             if(roster) {
-                roster.innerHTML = (appData.team || []).map(user => {
-                    const tag = user.role === 'admin' ? `<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full ml-2 font-bold uppercase tracking-widest">Admin</span>` : '';
+                const activeUsers = (appData.users || []).filter(u => u.status === 'active');
+                roster.innerHTML = activeUsers.map(user => {
+                    let badgeColor = 'bg-gray-100 text-gray-600';
+                    if (user.role === 'admin') badgeColor = 'bg-red-100 text-red-600';
+                    if (user.role === 'oversight') badgeColor = 'bg-purple-100 text-purple-600';
+
+                    const tag = `<span class="text-[10px] ${badgeColor} px-2 py-0.5 rounded-full ml-2 font-bold uppercase tracking-widest">${user.role}</span>`;
+                    
                     return `
                         <div class="flex justify-between items-center p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition">
                             <div class="flex items-center">
@@ -1581,16 +1656,25 @@
             const pendingSection = document.getElementById('team-pending-section');
             const pendingList = document.getElementById('team-pending-list');
             if (pendingSection && pendingList) {
-                if (!appData.pendingUsers || appData.pendingUsers.length === 0) {
+                const pendingUsers = (appData.users || []).filter(u => u.status === 'pending');
+
+                if (pendingUsers.length === 0) {
                     pendingSection.classList.add('hidden');
                 } else {
                     pendingSection.classList.remove('hidden');
-                    pendingList.innerHTML = appData.pendingUsers.map(u => `
-                        <div class="flex justify-between items-center p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-orange-800/30">
+                    pendingList.innerHTML = pendingUsers.map(u => `
+                        <div class="flex flex-col space-y-3 p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-orange-800/30">
                             <span class="font-bold text-gray-800 dark:text-gray-200">${u.name}</span>
-                            <div class="flex space-x-2">
-                                <button onclick="acceptPendingUser('${u.id}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition active:scale-95">Accept</button>
-                                <button onclick="declinePendingUser('${u.id}')" class="bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1.5 rounded-lg text-xs font-bold transition active:scale-95">Decline</button>
+                            <div class="flex justify-between items-center space-x-2">
+                                <select id="role-select-${u.id}" class="text-xs bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded p-1.5 outline-none font-medium">
+                                    <option value="user">Role: Employee</option>
+                                    <option value="oversight">Role: Oversight</option>
+                                    <option value="admin">Role: Admin</option>
+                                </select>
+                                <div class="flex space-x-2">
+                                    <button onclick="acceptPendingUser('${u.id}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition active:scale-95">Accept</button>
+                                    <button onclick="declinePendingUser('${u.id}')" class="bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1.5 rounded-lg text-xs font-bold transition active:scale-95">Decline</button>
+                                </div>
                             </div>
                         </div>
                     `).join('');
@@ -1601,31 +1685,36 @@
         }
 
         function acceptPendingUser(id) {
-            const user = appData.pendingUsers.find(u => u.id === id);
-            if(user) {
-                user.role = 'user'; // Defaults to standard employee
-                appData.team.push(user);
-                appData.pendingUsers = appData.pendingUsers.filter(u => u.id !== id);
+            const user = (appData.users || []).find(u => u.id === id);
+            const roleSelect = document.getElementById(`role-select-${id}`);
+            if(user && roleSelect) {
+                user.role = roleSelect.value; 
+                user.status = 'active';
                 saveData();
                 showToast(`${user.name} accepted into Team.`);
             }
         }
 
         function declinePendingUser(id) {
-            appData.pendingUsers = appData.pendingUsers.filter(u => u.id !== id);
-            saveData();
-            showToast("Request declined.");
+            const user = (appData.users || []).find(u => u.id === id);
+            if(user) {
+                user.status = 'declined';
+                saveData();
+                showToast("Request declined.");
+            }
         }
 
         function deleteTeamMember(id) {
-            if (!appData.team || appData.team.length <= 1) return showToast("Cannot delete the last member.");
-            appData.team = appData.team.filter(u => u.id !== id);
+            const activeCount = (appData.users || []).filter(u => u.status === 'active').length;
+            if (activeCount <= 1) return showToast("Cannot delete the last active member.");
+            appData.users = appData.users.filter(u => u.id !== id);
             saveData();
         }
 
         function renderTeamStats() {
             const stats = {};
-            (appData.team || []).forEach(u => stats[u.id] = { name: u.name, count: 0, gross: 0, profit: 0 });
+            const activeUsers = (appData.users || []).filter(u => u.status === 'active');
+            activeUsers.forEach(u => stats[u.id] = { name: u.name, count: 0, gross: 0, profit: 0 });
             
             (appData.currentTransactions || []).forEach(t => {
                 const uid = t.userId || 'unknown';
@@ -1655,6 +1744,68 @@
             `).join('');
             
             if (list.innerHTML === '') list.innerHTML = '<p class="text-xs text-gray-400 text-center py-2">No team stats for today yet.</p>';
+        }
+
+        // --- OVERSIGHT VIEW LOGIC ---
+
+        function renderOversightTab() {
+            // Inventory Left
+            const invList = document.getElementById('oversight-inventory-list');
+            if(invList) {
+                let html = '';
+                for (const [key, qty] of Object.entries(appData.inventory)) {
+                    if (qty > 0) {
+                        const [type, weight] = key.split('_');
+                        html += `
+                            <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700">
+                                <span class="font-medium text-sm text-gray-700 dark:text-gray-300">${type} - ${weight}</span>
+                                <span class="font-bold text-gray-900 dark:text-white">${qty} remaining</span>
+                            </div>
+                        `;
+                    }
+                }
+                invList.innerHTML = html || '<p class="text-sm text-gray-500 text-center py-4">No inventory remaining.</p>';
+            }
+
+            // Financials (Global Earned - Expenses)
+            const finList = document.getElementById('oversight-financials');
+            if(finList) {
+                let globalGross = 0;
+                let globalSupplierExpenses = 0;
+
+                (appData.history || []).forEach(h => {
+                    globalGross += h.gross || 0;
+                    globalSupplierExpenses += h.supplier || 0;
+                });
+
+                const today = getTodayTotals();
+                globalGross += today.gross;
+                globalSupplierExpenses += today.supplier;
+
+                let customDebtExpenses = 0;
+                (appData.customDebts || []).forEach(d => customDebtExpenses += d.amount);
+
+                const netEarned = globalGross - globalSupplierExpenses - customDebtExpenses;
+
+                finList.innerHTML = `
+                    <div class="flex justify-between items-center py-2">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">Total Money Earned</span>
+                        <span class="font-bold text-green-600 dark:text-green-400">$${globalGross.toLocaleString()}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">Total Product Expenses</span>
+                        <span class="font-bold text-red-500 dark:text-red-400">-$${globalSupplierExpenses.toLocaleString()}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">Custom Debts/Expenses</span>
+                        <span class="font-bold text-red-500 dark:text-red-400">-$${customDebtExpenses.toLocaleString()}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-t border-gray-200 dark:border-gray-700 mt-2">
+                        <span class="text-sm font-black uppercase tracking-widest text-gray-800 dark:text-gray-100">Net Final Profit</span>
+                        <span class="font-black text-xl text-blue-600 dark:text-blue-400">$${netEarned.toLocaleString()}</span>
+                    </div>
+                `;
+            }
         }
 
         // --- CATALOG & SETTINGS LOGIC ---
@@ -2028,7 +2179,7 @@
             const targetTab = document.getElementById(`tab-${tabName}`);
             if(targetTab) targetTab.classList.add('active');
 
-            const navIds = ['sales', 'reports', 'teams', 'settings'];
+            const navIds = ['sales', 'reports', 'teams', 'settings', 'oversight'];
             navIds.forEach(id => {
                 const el = document.getElementById(`nav-${id}`);
                 if (el) {
@@ -2041,6 +2192,7 @@
             if (tabName === 'sales') { calculateReconciliation(); }
             if (tabName === 'settings') { renderSettingsTab(); }
             if (tabName === 'teams') { renderTeamTab(); }
+            if (tabName === 'oversight') { renderOversightTab(); }
         }
 
         function toggleTheme() {
@@ -2067,7 +2219,7 @@
                 appData = {
                     inventory: {}, currentTransactions: [], history: [], carriedDebt: 0, customDebts: [], supplierPayments: [], calcCash: '', calcBank: '',
                     settings: { types: ['Soft', 'Hard', 'Down', 'Side'], weights: ['1g', '2g', '3.5g', '7g'], pricing: {} },
-                    team: [{ id: 'u1', name: 'Admin/Owner', role: 'admin' }], pendingUsers: [],
+                    users: [{ id: 'u1', name: 'Admin/Owner', role: 'admin', status: 'active' }],
                     adminPin: '1234'
                 };
                 currentSessionUser = null;
