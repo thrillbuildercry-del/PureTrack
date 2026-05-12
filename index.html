@@ -36,6 +36,7 @@
         .slide-out { animation: slideOut 0.3s forwards; }
         @keyframes slideOut { to { transform: translateX(100%); opacity: 0; height: 0; margin: 0; padding: 0; } }
 
+        /* Floating Glassmorphic Dock */
         .nav-dock {
             position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 400px;
             border-radius: 9999px; padding: 8px; display: flex; justify-content: center; gap: 12px; background: rgba(255, 255, 255, 0.85);
@@ -70,7 +71,10 @@
         .nav-item.active .nav-text { opacity: 1; transform: translateX(-4px) scale(1); transition-delay: 0.1s; }
     </style>
     <script>
-        if (!('theme' in localStorage)) { localStorage.setItem('theme', 'dark'); }
+        // Force Dark Mode Default
+        if (!('theme' in localStorage)) {
+            localStorage.setItem('theme', 'dark');
+        }
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         }
@@ -80,6 +84,7 @@
 
     <div class="max-w-md mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen shadow-xl relative transition-colors duration-200 flex flex-col">
         
+        <!-- ================= AUTHENTICATION / LOCK SCREEN ================= -->
         <div id="auth-screen" class="flex-1 flex flex-col items-center justify-center p-6 transition-opacity duration-300">
             <div class="w-full bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 border border-gray-100 dark:border-gray-700/50">
                 <div class="text-center mb-8">
@@ -118,7 +123,9 @@
                 </div>
                 
                 <div id="auth-view-declined" class="space-y-4 hidden text-center py-4">
-                    <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="x-circle" class="w-6 h-6"></i></div>
+                    <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="x-circle" class="w-6 h-6"></i>
+                    </div>
                     <h3 class="font-bold text-gray-800 dark:text-white text-lg">Access Declined</h3>
                     <p class="text-sm text-gray-500 dark:text-gray-400">The administrator has declined your request to access this team.</p>
                     <button onclick="cancelPendingRequest()" class="mt-4 text-sm font-bold text-gray-600 underline">Return to Login</button>
@@ -126,6 +133,7 @@
             </div>
         </div>
 
+        <!-- ================= MAIN APP WRAPPER ================= -->
         <div id="app-wrapper" class="hidden flex-col min-h-screen pb-28">
             
             <header class="bg-blue-600 dark:bg-gray-800 text-white p-4 sticky top-0 z-40 shadow-md transition-colors duration-200">
@@ -143,11 +151,14 @@
 
             <main class="p-4 flex-1">
                 
+                <!-- TAB 1: SALES & TERMINAL -->
                 <div id="tab-sales" class="tab-content active">
 
                     <div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg p-3 mb-2 flex justify-between items-center">
                         <div class="flex items-center">
-                            <div class="bg-indigo-500 text-white p-1.5 rounded-full mr-2"><i data-lucide="user" class="w-4 h-4"></i></div>
+                            <div class="bg-indigo-500 text-white p-1.5 rounded-full mr-2">
+                                <i data-lucide="user" class="w-4 h-4"></i>
+                            </div>
                             <div>
                                 <p class="text-[10px] uppercase font-bold text-indigo-500 dark:text-indigo-400 tracking-wider">Logged In As</p>
                                 <p class="font-bold text-gray-800 dark:text-gray-200 text-sm leading-none" id="display-active-user">Loading...</p>
@@ -156,12 +167,12 @@
                         <button onclick="logoutSession()" class="text-xs bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded font-bold hover:bg-indigo-200 transition">Logout</button>
                     </div>
                     
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors">
                         <h2 class="font-semibold text-gray-600 dark:text-gray-300 mb-3 flex items-center justify-between">
                             <div class="flex items-center"><i data-lucide="package" class="w-5 h-5 mr-2"></i> Inventory Overview</div>
                             <div class="flex space-x-2">
                                 <button onclick="showPersonalUseModal()" class="flex items-center text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-2 py-1 rounded hover:bg-purple-200 transition"><i data-lucide="user-minus" class="w-3 h-3 mr-1"></i> Personal</button>
-                                <button onclick="showInventoryModal()" class="flex items-center text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded hover:bg-gray-200 transition"><i data-lucide="plus" class="w-3 h-3 mr-1"></i> Restock</button>
+                                <button id="btn-restock-inventory" onclick="showInventoryModal()" class="flex items-center text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded hover:bg-gray-200 transition"><i data-lucide="plus" class="w-3 h-3 mr-1"></i> Restock</button>
                             </div>
                         </h2>
                         
@@ -174,22 +185,25 @@
                                 </div>
                             </div>
                             <div class="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg border border-green-100 dark:border-green-900/30 flex flex-col justify-center">
-                                <div class="text-[10px] text-green-600 dark:text-green-400 uppercase tracking-widest font-bold mb-1">Est. Net Profit</div>
+                                <div class="text-[10px] text-green-600 dark:text-green-400 uppercase tracking-widest font-bold mb-1">Remaining Profit</div>
                                 <div class="text-2xl font-black text-green-800 dark:text-green-300" id="display-potential-profit">$0</div>
                             </div>
                         </div>
 
                         <div class="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700 flex justify-between items-center">
                             <div>
-                                <div class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-bold">Allowance</div>
-                                <div class="text-[10px] text-gray-400 leading-tight">Safe to smoke (Break-Even)</div>
+                                <div class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-bold">Safe Allowance</div>
+                                <div class="text-[10px] text-gray-400 leading-tight">Can use without owing</div>
                             </div>
                             <div class="text-xl font-black" id="display-safe-allowance">0g</div>
                         </div>
                     </div>
 
+                    <!-- Dynamic Sell Wizard -->
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 mb-4 border border-blue-100 dark:border-blue-900/30 relative overflow-hidden transition-colors">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gray-100 dark:bg-gray-700"><div id="wizard-progress" class="h-full bg-blue-500 transition-all duration-300 w-1/3"></div></div>
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gray-100 dark:bg-gray-700">
+                            <div id="wizard-progress" class="h-full bg-blue-500 transition-all duration-300 w-1/3"></div>
+                        </div>
                         
                         <div id="wizard-step-1" class="wizard-step active mt-2">
                             <h2 class="font-bold text-gray-800 dark:text-white text-lg mb-4 text-center">Select Product Type</h2>
@@ -197,7 +211,9 @@
                         </div>
 
                         <div id="wizard-step-2" class="wizard-step mt-2">
-                            <button onclick="wizardSetStep(1)" class="text-sm text-gray-500 dark:text-gray-400 mb-2 flex items-center hover:text-blue-500 transition"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back</button>
+                            <button onclick="wizardSetStep(1)" class="text-sm text-gray-500 dark:text-gray-400 mb-2 flex items-center hover:text-blue-500 transition">
+                                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back
+                            </button>
                             <h2 class="font-bold text-gray-800 dark:text-white text-lg mb-1 text-center" id="wizard-selected-type-label">Type</h2>
                             <p class="text-center text-xs text-gray-400 mb-4 uppercase tracking-widest">Select Retail Weight</p>
                             
@@ -210,7 +226,9 @@
                         </div>
 
                         <div id="wizard-step-3" class="wizard-step mt-2">
-                            <button onclick="wizardSetStep(2)" class="text-sm text-gray-500 dark:text-gray-400 mb-4 flex items-center hover:text-blue-500 transition"><i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back</button>
+                            <button onclick="wizardSetStep(2)" class="text-sm text-gray-500 dark:text-gray-400 mb-4 flex items-center hover:text-blue-500 transition">
+                                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back
+                            </button>
                             
                             <div class="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-4 text-center">
                                 <div class="text-xs font-bold text-blue-500 uppercase tracking-widest mb-1" id="wizard-summary-label">Item - Weight</div>
@@ -220,6 +238,14 @@
                                 </div>
                                 <div class="text-3xl font-black text-gray-800 dark:text-white" id="wizard-suggested-price">$0</div>
                                 <div class="text-[10px] text-gray-400 mt-2">Prop. Cost of Goods: <span id="wizard-base-cost">$0</span></div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase mb-2">Payment Method</label>
+                                <div class="flex space-x-2">
+                                    <button id="pay-method-cash" onclick="setPaymentMethod('cash')" class="flex-1 py-2 rounded-lg font-bold border-2 border-green-500 bg-green-50 text-green-700 transition">Cash</button>
+                                    <button id="pay-method-bank" onclick="setPaymentMethod('bank')" class="flex-1 py-2 rounded-lg font-bold border-2 border-gray-200 bg-gray-50 text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 transition">E-Transfer</button>
+                                </div>
                             </div>
 
                             <div class="mb-5">
@@ -236,6 +262,7 @@
                         </div>
                     </div>
 
+                    <!-- Today's Transactions -->
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors">
                         <h2 class="font-semibold text-gray-600 dark:text-gray-300 mb-3 flex items-center justify-between">
                             <div class="flex items-center"><i data-lucide="list" class="w-5 h-5 mr-2"></i> Today's Transactions</div>
@@ -257,7 +284,8 @@
                         </button>
                     </div>
 
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors">
+                    <!-- Ledger (Admin Only) -->
+                    <div id="ledger-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors">
                         <h2 class="font-semibold text-gray-600 dark:text-gray-300 mb-4 flex items-center">
                             <i data-lucide="calculator" class="w-5 h-5 mr-2"></i> Ledger & Cash Recon
                         </h2>
@@ -335,6 +363,7 @@
                     </div>
                 </div>
 
+                <!-- TAB 2: REPORTS & ANALYTICS -->
                 <div id="tab-reports" class="tab-content">
                     <div class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-800 dark:to-indigo-900 rounded-xl shadow-sm p-5 mb-4 text-white">
                         <h2 class="font-semibold text-blue-100 dark:text-blue-200 mb-1 flex items-center text-sm uppercase tracking-wider">
@@ -357,6 +386,7 @@
                     </div>
                 </div>
 
+                <!-- TAB 3: TEAMS (Admin Only) -->
                 <div id="tab-teams" class="tab-content">
                     <div id="team-pending-section" class="mb-6 hidden">
                         <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/50 rounded-xl p-4 shadow-sm">
@@ -376,6 +406,7 @@
                     </div>
                 </div>
 
+                <!-- TAB 4: SETTINGS (Admin Only) -->
                 <div id="tab-settings" class="tab-content">
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors">
                         <h2 class="font-semibold text-gray-600 dark:text-gray-300 mb-4 flex items-center">
@@ -422,6 +453,7 @@
                     </div>
                 </div>
 
+                <!-- TAB 5: OVERSIGHT (Oversight Role Only) -->
                 <div id="tab-oversight" class="tab-content">
                     <div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg p-3 mb-4 flex justify-between items-center">
                         <div class="flex items-center">
@@ -449,6 +481,7 @@
 
             </main>
 
+            <!-- Floating Dynamic Dock Navigation -->
             <nav class="nav-dock">
                 <button onclick="switchTab('sales')" id="nav-sales" class="nav-item active">
                     <div class="nav-icon-container"><span class="text-xl font-black tracking-tighter leading-none italic">$$</span></div>
@@ -474,6 +507,7 @@
             
         </div> 
 
+        <!-- Inventory Restock Modal -->
         <div id="inventory-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]">
                 <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex justify-between items-center">
@@ -507,6 +541,7 @@
             </div>
         </div>
 
+        <!-- Personal Use Modal -->
         <div id="personal-use-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]">
                 <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-purple-50 dark:bg-purple-900/20 flex justify-between items-center">
@@ -533,6 +568,7 @@
             </div>
         </div>
 
+        <!-- End of Day Summary Modal -->
         <div id="end-day-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]">
                 <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex justify-between items-center">
@@ -564,6 +600,7 @@
             </div>
         </div>
 
+        <!-- History Detail Modal -->
         <div id="history-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]">
                 <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex justify-between items-center">
@@ -609,7 +646,7 @@
         };
 
         let currentSessionUser = localStorage.getItem('localSessionUser') || null;
-        let wizardState = { step: 1, type: null, weight: null, isCustom: false };
+        let wizardState = { step: 1, type: null, weight: null, isCustom: false, paymentMethod: 'cash' };
         let db, auth, cloudUser, appId;
         let isSyncingLocal = false;
 
@@ -718,6 +755,13 @@
                 ['nav-sales', 'nav-reports'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = isOversight ? 'none' : 'flex'; });
                 const overEl = document.getElementById('nav-oversight'); if(overEl) overEl.style.display = isOversight ? 'flex' : 'none';
                 
+                // Block regular employees from managing inventory and ledger
+                const btnRestock = document.getElementById('btn-restock-inventory');
+                if (btnRestock) btnRestock.style.display = isAdmin ? 'flex' : 'none';
+                
+                const ledgerSec = document.getElementById('ledger-section');
+                if (ledgerSec) ledgerSec.style.display = isAdmin ? 'block' : 'none';
+
                 const activeTabEl = document.querySelector('.tab-content.active');
                 if (isOversight) { if (!activeTabEl || activeTabEl.id !== 'tab-oversight') switchTab('oversight'); } 
                 else if (!isAdmin) { if (!activeTabEl || activeTabEl.id === 'tab-teams' || activeTabEl.id === 'tab-settings' || activeTabEl.id === 'tab-oversight') switchTab('sales'); }
@@ -819,50 +863,58 @@
 
         function updateUI() {
             const totals = getTodayTotals();
-            let totalStockWeight = 0; let totalExpectedValue = 0;
+            let totalStockWeight = 0; 
+            let remainingPotentialProfit = 0;
+            let totalExpectedValue = 0;
             
             if (appData.settings && appData.settings.types) {
                 appData.settings.types.forEach(type => {
                     const pool = appData.inventory[type] || { weight: 0, cpg: 0 };
                     totalStockWeight += pool.weight;
-                    totalExpectedValue += pool.weight * getAvgRetailPricePerGram(type);
+                    
+                    const avgRetailPrice = getAvgRetailPricePerGram(type);
+                    const estimatedRevenue = pool.weight * avgRetailPrice;
+                    totalExpectedValue += estimatedRevenue;
+                    
+                    const poolCost = pool.weight * pool.cpg;
+                    remainingPotentialProfit += (estimatedRevenue - poolCost);
                 });
             }
 
-            // Safe Allowance Math
             let totalDebt = (appData.carriedDebt || 0);
             (appData.customDebts || []).forEach(d => totalDebt += d.amount);
             (appData.supplierPayments || []).forEach(p => totalDebt -= p.amount);
 
+            const currentCash = parseFloat(appData.calcCash) || 0;
+            const currentBank = parseFloat(appData.calcBank) || 0;
+            const totalLiquid = currentCash + currentBank;
+            
+            // Unfunded debt drops when cash increases (e.g. from sales)
+            const unfundedDebt = Math.max(0, totalDebt - totalLiquid);
+
             let safeGrams = 0;
             let safeColor = "text-gray-500";
             
-            if (totalDebt <= 0) {
+            if (unfundedDebt <= 0) {
                 safeGrams = totalStockWeight; safeColor = "text-green-500"; 
-            } else if (totalExpectedValue <= totalDebt) {
+            } else if (totalExpectedValue <= unfundedDebt) {
                 safeGrams = 0; safeColor = "text-red-500"; 
             } else {
-                const avgGlobalRetail = totalExpectedValue / totalStockWeight;
-                const gramsToBreakEven = totalDebt / avgGlobalRetail;
+                const avgGlobalRetail = totalStockWeight > 0 ? (totalExpectedValue / totalStockWeight) : 0;
+                const gramsToBreakEven = avgGlobalRetail > 0 ? (unfundedDebt / avgGlobalRetail) : 0;
                 safeGrams = totalStockWeight - gramsToBreakEven;
-                safeColor = "text-orange-500"; 
+                // Orange if safe margin is shrinking (less than 15% of stock is safe)
+                safeColor = (safeGrams / totalStockWeight < 0.15) ? "text-orange-500" : "text-green-500"; 
             }
 
             const safeEl = document.getElementById('display-safe-allowance');
             if(safeEl) {
-                safeEl.innerText = `${Math.round(safeGrams * 100) / 100}g`;
+                safeEl.innerText = `${Math.floor(safeGrams * 100) / 100}g`;
                 safeEl.className = `text-xl font-black ${safeColor}`;
             }
 
             const stockEl = document.getElementById('display-total-stock'); if(stockEl) stockEl.innerText = (Math.round(totalStockWeight * 100) / 100);
-            
-            let currentPotentialProfit = 0;
-            if(totalExpectedValue > 0) {
-                let totalPoolCosts = 0;
-                appData.settings.types.forEach(t => { const p = appData.inventory[t] || {weight:0, cpg:0}; totalPoolCosts += p.weight*p.cpg; });
-                currentPotentialProfit = totalExpectedValue - totalPoolCosts;
-            }
-            const potProfitEl = document.getElementById('display-potential-profit'); if(potProfitEl) potProfitEl.innerText = `$${Math.round(currentPotentialProfit).toLocaleString()}`;
+            const potProfitEl = document.getElementById('display-potential-profit'); if(potProfitEl) potProfitEl.innerText = `$${Math.round(remainingPotentialProfit).toLocaleString()}`;
             
             const activeUser = (appData.users || []).find(u => u.id === appData.activeUserId);
             [document.getElementById('display-active-user'), document.getElementById('display-oversight-user')].forEach(el => {
@@ -973,6 +1025,19 @@
 
         // ================= WIZARD =================
 
+        function setPaymentMethod(method) {
+            wizardState.paymentMethod = method;
+            const btnCash = document.getElementById('pay-method-cash');
+            const btnBank = document.getElementById('pay-method-bank');
+            if(method === 'cash') {
+                btnCash.className = 'flex-1 py-2 rounded-lg font-bold border-2 border-green-500 bg-green-50 text-green-700 transition';
+                btnBank.className = 'flex-1 py-2 rounded-lg font-bold border-2 border-gray-200 bg-gray-50 text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 transition';
+            } else {
+                btnBank.className = 'flex-1 py-2 rounded-lg font-bold border-2 border-blue-500 bg-blue-50 text-blue-700 transition';
+                btnCash.className = 'flex-1 py-2 rounded-lg font-bold border-2 border-gray-200 bg-gray-50 text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 transition';
+            }
+        }
+
         function wizardSetStep(step) {
             wizardState.step = step;
             document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
@@ -1002,6 +1067,8 @@
         }
 
         function prepareWizardCheckout() {
+            setPaymentMethod('cash'); // Reset to cash default
+
             const pool = appData.inventory[wizardState.type] || { weight: 0, cpg: 0 }; 
             const deductWeight = parseWeight(wizardState.weight);
             const specificPropCost = deductWeight * pool.cpg;
@@ -1039,8 +1106,15 @@
             const transaction = {
                 id: Date.now(), timestamp: new Date().getTime(), hour: new Date().getHours(), time: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
                 type: wizardState.type, weight: wizardState.weight, deductedGrams: deductWeight, label: `${wizardState.type} - ${wizardState.weight}`,
-                received: received, cost: cost, profit: profit, userId: appData.activeUserId, userName: activeUser ? activeUser.name : 'Unknown', isPersonal: false
+                received: received, cost: cost, profit: profit, userId: appData.activeUserId, userName: activeUser ? activeUser.name : 'Unknown', isPersonal: false, paymentMethod: wizardState.paymentMethod
             };
+
+            // Process payment directly into appropriate fund tracking
+            if (wizardState.paymentMethod === 'cash') {
+                appData.calcCash = ((parseFloat(appData.calcCash) || 0) + received).toString();
+            } else {
+                appData.calcBank = ((parseFloat(appData.calcBank) || 0) + received).toString();
+            }
 
             pool.weight = Math.max(0, pool.weight - deductWeight); appData.inventory[wizardState.type] = pool;
             if (!appData.currentTransactions) appData.currentTransactions = []; appData.currentTransactions.push(transaction);
@@ -1088,6 +1162,13 @@
                 const t = appData.currentTransactions[index];
                 let pool = appData.inventory[t.type] || { weight: 0, cpg: 0 };
                 pool.weight += (t.deductedGrams || parseWeight(t.weight)); appData.inventory[t.type] = pool;
+
+                // Revert funds logic optional. Assuming delete reverses the cash flow.
+                if(!t.isPersonal) {
+                    if(t.paymentMethod === 'bank') appData.calcBank = ((parseFloat(appData.calcBank) || 0) - t.received).toString();
+                    else appData.calcCash = ((parseFloat(appData.calcCash) || 0) - t.received).toString();
+                }
+
                 appData.currentTransactions.splice(index, 1); saveData(); showToast("Log deleted. Weight restored.");
             }
         }
@@ -1096,7 +1177,7 @@
             if (!appData.currentTransactions || appData.currentTransactions.length === 0) return showToast("No sales today.");
             const totals = getTodayTotals(); const grouped = {};
             appData.currentTransactions.forEach(t => {
-                if(t.isPersonal) return; // exclude personal from summary counts
+                if(t.isPersonal) return; 
                 const label = t.label || 'Item'; 
                 if (!grouped[label]) grouped[label] = { count: 0, gross: 0, profit: 0 };
                 grouped[label].count += 1; grouped[label].gross += t.received; grouped[label].profit += t.profit;
@@ -1203,38 +1284,6 @@
             if (list.innerHTML === '') list.innerHTML = '<p class="text-xs text-gray-400 text-center py-2">No team stats for today yet.</p>';
         }
 
-        // --- Basic missing functions filled for completeness
-        function addCustomDebt() { const amountEl = document.getElementById('new-custom-debt-amount'); const descEl = document.getElementById('new-custom-debt-desc'); if(!amountEl || !descEl) return; const amount = parseFloat(amountEl.value); if (isNaN(amount) || amount <= 0) return showToast("Enter a valid debt amount"); if(!appData.customDebts) appData.customDebts = []; appData.customDebts.push({ id: Date.now(), amount: amount, desc: descEl.value || 'Custom Expense' }); amountEl.value = ''; descEl.value = ''; saveData(); }
-        function removeCustomDebt(id) { if(!appData.customDebts) return; appData.customDebts = appData.customDebts.filter(d => d.id !== id); saveData(); }
-        function addSupplierPayment() { const amountEl = document.getElementById('new-payment-amount'); if(!amountEl) return; const amount = parseFloat(amountEl.value); if (isNaN(amount) || amount <= 0) return showToast("Enter a valid payment amount"); if(!appData.supplierPayments) appData.supplierPayments = []; appData.supplierPayments.push({ id: Date.now(), amount: amount }); amountEl.value = ''; saveData(); }
-        function removeSupplierPayment(id) { if(!appData.supplierPayments) return; appData.supplierPayments = appData.supplierPayments.filter(p => p.id !== id); saveData(); }
-        function transferBankToCash() { const bankInput = document.getElementById('calc-bank'); const cashInput = document.getElementById('calc-cash'); if(!bankInput || !cashInput) return; const bankVal = parseFloat(bankInput.value) || 0; const cashVal = parseFloat(cashInput.value) || 0; if (bankVal > 0) { cashInput.value = cashVal + bankVal; bankInput.value = ''; appData.calcCash = cashInput.value; appData.calcBank = bankInput.value; saveData(); showToast("Bank funds transferred to Cash."); } }
-
-        function renderTeamTab() {
-            const roster = document.getElementById('team-roster-list');
-            if(roster) {
-                const activeUsers = (appData.users || []).filter(u => u.status === 'active');
-                roster.innerHTML = activeUsers.map(user => {
-                    let badgeColor = 'bg-gray-100 text-gray-600'; if (user.role === 'admin') badgeColor = 'bg-red-100 text-red-600'; if (user.role === 'oversight') badgeColor = 'bg-purple-100 text-purple-600';
-                    const tag = `<span class="text-[10px] ${badgeColor} px-2 py-0.5 rounded-full ml-2 font-bold uppercase tracking-widest">${user.role}</span>`;
-                    return `<div class="flex justify-between items-center p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition"><div class="flex items-center"><div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3 font-bold">${user.name.charAt(0).toUpperCase()}</div><span class="font-bold text-gray-800 dark:text-gray-200">${user.name}</span>${tag}</div><button onclick="deleteTeamMember('${user.id}')" class="text-red-400 hover:text-red-600 p-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`;
-                }).join('');
-            }
-            const pendingSection = document.getElementById('team-pending-section'); const pendingList = document.getElementById('team-pending-list');
-            if (pendingSection && pendingList) {
-                const pendingUsers = (appData.users || []).filter(u => u.status === 'pending');
-                if (pendingUsers.length === 0) { pendingSection.classList.add('hidden'); } else {
-                    pendingSection.classList.remove('hidden');
-                    pendingList.innerHTML = pendingUsers.map(u => `<div class="flex flex-col space-y-3 p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-orange-100 dark:border-orange-800/30"><span class="font-bold text-gray-800 dark:text-white">${u.name}</span><div class="flex justify-between items-center space-x-2"><select id="role-select-${u.id}" class="text-xs bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 dark:text-white rounded p-1.5 outline-none font-medium"><option value="user">Role: Employee</option><option value="oversight">Role: Oversight</option><option value="admin">Role: Admin</option></select><div class="flex space-x-2"><button onclick="acceptPendingUser('${u.id}')" class="bg-green-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold active:scale-95">Accept</button><button onclick="declinePendingUser('${u.id}')" class="bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold active:scale-95">Decline</button></div></div></div>`).join('');
-                }
-            }
-            lucide.createIcons();
-        }
-
-        function acceptPendingUser(id) { const user = (appData.users || []).find(u => u.id === id); const roleSelect = document.getElementById(`role-select-${id}`); if(user && roleSelect) { user.role = roleSelect.value; user.status = 'active'; saveData(); showToast(`${user.name} accepted.`); } }
-        function declinePendingUser(id) { const user = (appData.users || []).find(u => u.id === id); if(user) { user.status = 'declined'; saveData(); showToast("Request declined."); } }
-        function deleteTeamMember(id) { const activeCount = (appData.users || []).filter(u => u.status === 'active').length; if (activeCount <= 1) return showToast("Cannot delete the last active member."); appData.users = appData.users.filter(u => u.id !== id); saveData(); }
-
         function renderOversightTab() {
             const invList = document.getElementById('oversight-inventory-list');
             if(invList) {
@@ -1283,10 +1332,7 @@
             const modal = document.getElementById('history-detail-modal'); if(modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
         }
 
-        function calculatePredictions(totals) { const p = document.getElementById('predicted-earnings'); if(p) p.innerText = `$${Math.round((totals.profit || 0) * 7).toLocaleString()}`; }
-        function updateHourlyChart() {} function updateChart(viewMode) {}
-
-        // ================= SETTINGS LOGIC =================
+        // --- SETUP & NAVIGATION ---
 
         function renderSettingsTab() {
             const renderList = (id, cat) => { const el = document.getElementById(id); if(el) el.innerHTML = (appData.settings[cat] || []).map(t => `<div class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full text-sm flex items-center shadow-sm">${t} <button onclick="removeCatalogItem('${cat}', '${t}')" class="ml-2 text-red-400">&times;</button></div>`).join(''); };
