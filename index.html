@@ -80,7 +80,7 @@
 
     <div class="max-w-md mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen shadow-xl relative transition-colors duration-200 flex flex-col">
         
-        <!-- ================= AUTHENTICATION / LOCK SCREEN ================= -->
+      
         <div id="auth-screen" class="flex-1 flex flex-col items-center justify-center p-6 transition-opacity duration-300">
             <div class="w-full bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 border border-gray-100 dark:border-gray-700/50">
                 <div class="text-center mb-8">
@@ -129,7 +129,7 @@
             </div>
         </div>
 
-        <!-- ================= MAIN APP WRAPPER ================= -->
+    
         <div id="app-wrapper" class="hidden flex-col min-h-screen pb-28">
             
             <header class="bg-blue-600 dark:bg-gray-800 text-white p-4 sticky top-0 z-40 shadow-md transition-colors duration-200">
@@ -147,10 +147,9 @@
 
             <main class="p-4 flex-1">
                 
-                <!-- TAB 1: SALES & TERMINAL -->
+              
                 <div id="tab-sales" class="tab-content active">
 
-                    <!-- Active User Banner -->
                     <div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg p-3 mb-2 flex justify-between items-center">
                         <div class="flex items-center">
                             <div class="bg-indigo-500 text-white p-1.5 rounded-full mr-2">
@@ -164,8 +163,7 @@
                         <button onclick="logoutSession()" class="text-xs bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded font-bold hover:bg-indigo-200 transition">Logout</button>
                     </div>
                     
-                    <!-- Dynamic Inventory Summary Card -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750">
                         <h2 class="font-semibold text-gray-600 dark:text-gray-300 mb-3 flex items-center justify-between">
                             <div class="flex items-center"><i data-lucide="package" class="w-5 h-5 mr-2"></i> Inventory Overview</div>
                             <div class="flex space-x-2">
@@ -201,19 +199,19 @@
                         </div>
                     </div>
 
-                    <!-- Dynamic Sell Wizard -->
+                  
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 mb-4 border border-blue-100 dark:border-blue-900/30 relative overflow-hidden transition-colors">
                         <div class="absolute top-0 left-0 w-full h-1 bg-gray-100 dark:bg-gray-700">
                             <div id="wizard-progress" class="h-full bg-blue-500 transition-all duration-300 w-1/3"></div>
                         </div>
                         
-                        <!-- Step 1: Select Type -->
+                     
                         <div id="wizard-step-1" class="wizard-step active mt-2">
                             <h2 class="font-bold text-gray-800 dark:text-white text-lg mb-4 text-center">Select Product Type</h2>
                             <div class="grid grid-cols-2 gap-3" id="wizard-types-grid"></div>
                         </div>
 
-                        <!-- Step 2: Select Retail Weight -->
+                   
                         <div id="wizard-step-2" class="wizard-step mt-2">
                             <button onclick="wizardSetStep(1)" class="text-sm text-gray-500 dark:text-gray-400 mb-2 flex items-center hover:text-blue-500 transition">
                                 <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back
@@ -229,7 +227,7 @@
                             </div>
                         </div>
 
-                        <!-- Step 3: Checkout -->
+                    
                         <div id="wizard-step-3" class="wizard-step mt-2">
                             <button onclick="wizardSetStep(2)" class="text-sm text-gray-500 dark:text-gray-400 mb-4 flex items-center hover:text-blue-500 transition">
                                 <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Back
@@ -267,7 +265,7 @@
                         </div>
                     </div>
 
-                    <!-- Today's Transactions -->
+                   
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors">
                         <h2 class="font-semibold text-gray-600 dark:text-gray-300 mb-3 flex items-center justify-between">
                             <div class="flex items-center"><i data-lucide="list" class="w-5 h-5 mr-2"></i> Today's Transactions</div>
@@ -292,7 +290,7 @@
                         </button>
                     </div>
 
-                    <!-- Ledger & Cash Recon (ADMIN ONLY) -->
+                    
                     <div id="ledger-section" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors hidden">
                         <h2 class="font-semibold text-gray-600 dark:text-gray-300 mb-4 flex items-center">
                             <i data-lucide="calculator" class="w-5 h-5 mr-2"></i> Ledger & Cash Recon
@@ -371,9 +369,8 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: REPORTS & ANALYTICS -->
+      
                 <div id="tab-reports" class="tab-content">
-                    
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors">
                         <h3 class="font-semibold text-gray-600 dark:text-gray-300 mb-3 text-sm uppercase flex items-center">
                             <i data-lucide="users" class="w-4 h-4 mr-2"></i> Team Performance (Today)
@@ -387,7 +384,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: TEAMS (Admin Only) -->
+           
                 <div id="tab-teams" class="tab-content">
                     <div id="team-pending-section" class="mb-6 hidden">
                         <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/50 rounded-xl p-4 shadow-sm">
@@ -407,7 +404,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 4: SETTINGS (Admin Only) -->
+             
                 <div id="tab-settings" class="tab-content">
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4 border border-gray-100 dark:border-gray-700 transition-colors">
                         <h2 class="font-semibold text-gray-600 dark:text-gray-300 mb-4 flex items-center">
@@ -454,7 +451,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 5: OVERSIGHT (Oversight Role Only) -->
+               
                 <div id="tab-oversight" class="tab-content">
                     <div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg p-3 mb-4 flex justify-between items-center">
                         <div class="flex items-center">
@@ -482,7 +479,7 @@
 
             </main>
 
-            <!-- Floating Dynamic Dock Navigation -->
+            
             <nav class="nav-dock">
                 <button onclick="switchTab('sales')" id="nav-sales" class="nav-item active">
                     <div class="nav-icon-container"><span class="text-xl font-black tracking-tighter leading-none italic">$$</span></div>
@@ -508,7 +505,7 @@
             
         </div> 
 
-        <!-- Inventory Restock Modal -->
+ 
         <div id="inventory-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]">
                 <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex justify-between items-center">
@@ -542,7 +539,7 @@
             </div>
         </div>
 
-        <!-- Personal Use Modal -->
+      
         <div id="personal-use-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]">
                 <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-purple-50 dark:bg-purple-900/20 flex justify-between items-center">
@@ -569,7 +566,7 @@
             </div>
         </div>
 
-        <!-- End of Day Summary Modal -->
+        
         <div id="end-day-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]">
                 <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex justify-between items-center">
@@ -601,7 +598,7 @@
             </div>
         </div>
 
-        <!-- History Detail Modal -->
+        
         <div id="history-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh] animate-[fadeIn_0.2s_ease-out]">
                 <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex justify-between items-center">
@@ -654,13 +651,11 @@
         async function initFirebase() {
             try {
                 const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
-                const { getAuth, signInAnonymously, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js');
+                const { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js');
                 
-                const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
                 let firebaseConfig;
-
-                if (firebaseConfigStr) {
-                    firebaseConfig = JSON.parse(firebaseConfigStr);
+                if (typeof __firebase_config !== 'undefined') {
+                    firebaseConfig = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
                 } else {
                     // Fallback to hardcoded configuration for standard/standalone hosting
                     firebaseConfig = {
@@ -675,10 +670,16 @@
                 }
 
                 appId = typeof __app_id !== 'undefined' ? __app_id : 'deals-app'; 
+
                 const app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 
-                await signInAnonymously(auth);
+                // Canvas specific auth hook, fallback to anon if not in Canvas
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
 
                 onAuthStateChanged(auth, (user) => {
                     cloudUser = user;
@@ -699,8 +700,8 @@
             const { getFirestore, doc, onSnapshot } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
             db = getFirestore();
             
-            // Strictly valid 6 segment path: collection -> doc -> collection -> doc -> collection -> doc
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'appState', 'mainDoc');
+            // Fixed document reference path with strictly 4 segments (Collection -> Doc -> Col -> Doc)
+            const docRef = doc(db, 'artifacts', appId, 'public', 'trackerMain');
             
             onSnapshot(docRef, (snapshot) => {
                 if (snapshot.exists()) {
@@ -739,7 +740,7 @@
 
             try {
                 const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'appState', 'mainDoc');
+                const docRef = doc(db, 'artifacts', appId, 'public', 'trackerMain');
                 await setDoc(docRef, appData);
             } catch (err) {
                 showToast("Connection issue: Data currently unsynced.");
@@ -1196,8 +1197,8 @@
                     <div class="py-3 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
                         <div class="flex items-center mb-2"><div class="text-sm font-medium text-gray-800 dark:text-gray-200">${label} <span class="text-gray-500 font-normal">x${data.count}</span></div></div>
                         <div class="grid grid-cols-2 gap-2 text-center text-xs">
-                            <div class="bg-gray-100 dark:bg-gray-800/50 p-1.5 rounded"><div class="text-[9px] uppercase">Gross</div><b class="dark:text-white">$${data.gross.toLocaleString()}</b></div>
-                            <div class="bg-green-50 dark:bg-green-900/20 p-1.5 rounded text-green-700"><div class="text-[9px] uppercase">Margin Profit</div><b>$${Math.round(data.profit).toLocaleString()}</b></div>
+                            <div class="bg-gray-100 dark:bg-gray-800/50 p-1.5 rounded"><div class="text-[9px] uppercase dark:text-gray-400">Gross</div><b class="dark:text-white">$${data.gross.toLocaleString()}</b></div>
+                            <div class="bg-green-50 dark:bg-green-900/20 p-1.5 rounded text-green-700"><div class="text-[9px] uppercase dark:text-green-500">Margin Profit</div><b class="dark:text-green-400">$${Math.round(data.profit).toLocaleString()}</b></div>
                         </div>
                     </div>`).join('');
                 if(listEl.innerHTML === '') listEl.innerHTML = '<p class="text-sm text-center text-gray-400">Only personal usage logged.</p>';
